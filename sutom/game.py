@@ -5,11 +5,13 @@ import re
 import time
 from sutom import DICTIONARY_PATH
 
+
 class LetterPlacement(Enum):
     """Enum representing the position of a letter inside the guess"""
     WRONG = '\033[91m'
     RIGHT = '\033[92m'
     MISPLACED = '\033[93m'
+
 
 class Sutom():
     __word_to_find: str
@@ -26,7 +28,7 @@ class Sutom():
 
     def run(self) -> bool:
         """Runs the game, returns true while the game can still be played."""
-        
+
         while True:
             print("\033[2J")
             print(f"{len(self.__word_to_find)} LETTERS WORD TO FIND.")
@@ -41,7 +43,7 @@ class Sutom():
                 print("\033[91mINVALID WORLD LENGTH\033[00m")
                 time.sleep(1.5)
                 continue
-            
+
             if (re.search(r"[^a-zA-Z]", user_input)):
                 print("\033[91mILLEGAL CHARACTERS FOUND.\033[00m")
                 time.sleep(1.5)
@@ -52,7 +54,7 @@ class Sutom():
         if self.__try_guess(user_input):
             print("\033[92mYOU WON\033[00m")
             return False
-        
+
         self.__attemptsLeft -= 1
 
         if self.__attemptsLeft == 0:
@@ -69,7 +71,7 @@ class Sutom():
 
         # By default all letters are wrongly placed, then apply algorithm to
         # fix this.
-        placement_list: list[LetterPlacement] = [LetterPlacement.WRONG 
+        placement_list: list[LetterPlacement] = [LetterPlacement.WRONG
                                                  for i in range(len(guess))]
 
         correctly_placed: int = 0
@@ -90,7 +92,7 @@ class Sutom():
         self.__attempts.append(self.__get_guess_result(guess, placement_list))
 
         return guess == self.__word_to_find
-    
+
     def get_attempt_limit(self) -> int:
         """Returns the maximum amount of attempts before the game ends"""
         return self.__attemptLimit
@@ -98,18 +100,17 @@ class Sutom():
     def attempts_left(self) -> int:
         """Returns the amount of attempts left before the game ends"""
         return self.__attemptsLeft
-    
-    def __get_guess_result(self, guess: str, 
-                             placement_list: list[LetterPlacement]) -> str:
+
+    def __get_guess_result(self, guess: str,
+                           placement_list: list[LetterPlacement]) -> str:
         """Returns the result of a guess as a formatted string"""
-        
+
         attempt_string: str = ""
         for index, letter in enumerate([*guess]):
             attempt_string += placement_list[index].value + letter
 
         attempt_string += "\033[00m"
         return attempt_string
-            
 
     @staticmethod
     def __get_random_word() -> str:
@@ -118,7 +119,7 @@ class Sutom():
         words: list[str] = dictionary_file.readlines()
 
         return random.choice(words).strip()
-    
+
     @staticmethod
     def __letter_dict(word: str) -> dict[str, int]:
         """
@@ -135,6 +136,3 @@ class Sutom():
                 result_dict[letter] = 1
 
         return result_dict
-
-
-    

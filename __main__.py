@@ -1,5 +1,6 @@
 from sutom.game import Sutom
 
+
 def main():
     game: Sutom = Sutom(attemptLimit=10)
 
